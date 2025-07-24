@@ -1,0 +1,89 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@model ArticulosWeb.Pages.Articulo.DetalleModel
+@{
+    ViewData["Title"] = "Detalle";
+}
+<i id="iconoArticulo" class="fas fa-newspaper"></i><h2 id="titulo"></h2>
+<p><small id="autorFecha"></small></p>
+<p id="contenido" class="mb-4"></p>
+ <div class="hidden usr_user usr_admi">
+    <h5>Agregar comentario</h5>
+    <form id="comentarioForm">
+        <textarea id="texto" class="form-control mb-2" required></textarea>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-comment"></i>   Comentar</button>
+    </form>
+</div>
+<div class="hidden usr_anon">   
+<p><a href="/Auth/Login">Inicie sesión</a> o <a href="/Auth/Register">regístrese</a> para poder realizar comentarios</p>
+</div>
+<div class="accordion accordion-flush btn-danger" id="accordionComment">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#commentContent" aria-expanded="false" aria-controls="commentContent">
+       Comentarios &nbsp;&nbsp;&nbsp; <span id="contComment" class="badge text-bg-info">0</span>
+      </button>
+    </h2>
+    <div id="commentContent" class="accordion-collapse collapse" data-bs-parent="#accordionComment">
+      <div class="accordion-body">
+          <div>
+                <ul id="comentarios" class="list-group mb-4"></ul></div>
+          </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+ 
+@section Scripts {
+    <script>
+
+        const id = new URLSearchParams(window.location.search).get('id');
+
+        function cargarArticulo() {
+            wait('Obteniendo...');
+            $.get(`${apiUri}/api/articles/${id}`, function (data) {
+                const art = data.articulo;
+                $('#titulo').text(art.titulo);
+                $('#autorFecha').text(`por ${art.autor} - ${new Date(art.fechaCreacion).toLocaleDateString()}`);
+                $('#contenido').text(art.contenido);
+
+                let html = '';
+                data.comentarios.forEach(c => {
+                     var fecha= new Date(c.fecha).toLocaleDateString("es-NI");
+                    html += `<li class="list-group-item"><strong>${c.autor}:</strong> ${c.texto}<i class="fec_comment">${fecha}</i></li>`;
+                });
+                $('#comentarios').html(html);
+                     $('#contComment').text(data && data.comentarios ? data.comentarios.length : 0);
+
+          endWait();
+            });
+             
+        }
+
+        $('#comentarioForm').submit(function (e) {
+            e.preventDefault();
+            wait('Guardando..');
+            $.ajax({
+                url: `${apiUri}/api/articles/${id}/comments`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ texto: $('#texto').val() }),
+                headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+                success: function () {
+                    $('#texto').val('');
+                    cargarArticulo();
+                      endWait();
+                },
+                error: function () {
+                      endWait();
+                    alert('Error al comentar');
+                }
+            });
+        });
+
+        cargarArticulo();
+    </script>
+}

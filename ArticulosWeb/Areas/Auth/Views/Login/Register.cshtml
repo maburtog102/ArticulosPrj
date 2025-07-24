@@ -1,0 +1,40 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+	ViewData["Title"] = "Registro";
+    ViewData["FormTitle"] = "Registro";
+
+}
+@section Styles
+{
+    <link href="~/css/login.css" rel="stylesheet" />
+    <style>
+
+    </style>
+
+}
+<h2>Registro</h2>
+
+<form id="registerForm" class="mt-4">
+    <div class="form-group mb-2">
+        <label>Usuario</label>
+        <input type="text" class="form-control" id="nombreUsuario" required />
+    </div>
+    <div class="form-group mb-2">
+        <label>Email</label>
+        <input type="email" class="form-control" id="email" required />
+    </div>
+    <div class="form-group mb-2">
+        <label>Contraseña</label>
+        <input type="password" class="form-control" id="password" required />
+    </div>
+    <button type="submit" class="btn btn-success">Registrarse</button>
+</form>
+
+<div class="alert mt-3" id="registerAlert" style="display: none;"></div>
+
+<script src="~/js/login.js"></script>
+@section Scripts {
+<script>
+    
+</script>
+}

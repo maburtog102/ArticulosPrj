@@ -1,0 +1,66 @@
+﻿@page
+@model ArticulosWeb.Pages.Login.RegisterModel
+@{
+    ViewData["Title"] = "Registro";
+}
+ 
+    <style>
+    #userNameH {
+            display: none !important;
+        }
+    </style>
+ 
+<h2>Registro</h2>
+
+<form id="registerForm" class="mt-4">
+    <div class="form-group mb-2">
+        <label>Usuario</label>
+        <input type="text" class="form-control" id="nombreUsuario" required />
+    </div>
+    <div class="form-group mb-2">
+        <label>Email</label>
+        <input type="email" class="form-control" id="email" required />
+    </div>
+    <div class="form-group mb-2">
+        <label>Contraseña</label>
+        <input type="password" class="form-control" id="password" required />
+    </div>
+    <button type="submit" class="btn btn-success"><i class="fas fa-user-lock"></i>   Registrarse</button>
+        <a href="/Auth/Login" class="btn btn-primary"><i class="fas fa-user-lock"></i>   Iniciar Sesion</a>
+</form>
+
+<div class="alert mt-3" id="registerAlert" style="display: none;"></div>
+
+@section Scripts {
+    <script>
+        $('#registerForm').submit(function (e) {
+            e.preventDefault();
+            wait('Registrando...');
+            $.ajax({
+                url: `${apiUri}/api/auth/register`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    nombreUsuario: $('#nombreUsuario').val(),
+                    email: $('#email').val(),
+                    password: $('#password').val()
+                }),
+                success: function () {
+                      endWait();
+                    $('#registerAlert').removeClass('alert-danger').addClass('alert-success')
+                        .text("Usuario registrado correctamente").show();
+
+                          $('#nombreUsuario').val(''),
+                  $('#email').val(''),
+                     $('#password').val('')
+                         //location.href = "/Articulo/Index";
+                },
+                error: function () {
+                      endWait();
+                    $('#registerAlert').removeClass('alert-success').addClass('alert-danger')
+                        .text("No se pudo registrar el usuario").show();
+                }
+            });
+        });
+    </script>
+}

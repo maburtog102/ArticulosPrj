@@ -1,0 +1,134 @@
+﻿@page
+@model ArticulosWeb.Pages.Articulo.AdminModel
+@{
+    ViewData["Title"] = "Administración";
+}
+<div class="hidden usr_admi usr_user">
+<h2>Mis Artículos</h2>
+
+<div class="mb-4">
+    <h5 id="formTitulo">Nuevo artículo</h5>
+    <form id="articuloForm">
+        <input type="hidden" id="idArticulo" />
+        <input type="text" id="titulo" class="form-control mb-2" placeholder="Título" required />
+        <input type="text" id="resumen" class="form-control mb-2" placeholder="Resumen" required />
+        <textarea id="contenido" class="form-control mb-2" placeholder="Contenido" required></textarea>
+        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i>   Guardar</button>
+        <button type="button" id="cancelar" class="btn btn-secondary"><i class="fas fa-cancel"></i>   Cancelar</button>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+             <th>Autor</th><th>Título</th><th>Fecha de Publicación</th><th width="150px">Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="tablaArticulos"></tbody>
+</table>
+</div>
+@section Scripts {
+<script>
+    function cargarArticulos() {
+        wait('Obteniendo articulos...');
+            $.get(`${apiUri}/api/articles`, function (data) {   
+                //var hidden= userType==1?'':'hidden';
+
+                if(userType==2)
+                data = data.filter(f=> f.autorId==user.id);
+
+            let html = '';
+            data.forEach(a => {
+                     var fecha= new Date(a.fechaCreacion).toLocaleDateString("es-NI");
+                html += `<tr>
+                    <td>${a.autor}</td>
+                    <td>${a.titulo}</td>
+                    <td>${fecha}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                        <a href="#" class="btn btn-sm btn-warning" onclick="editar(${a.id}, '${a.titulo}', '${a.resumen}', \`${a.contenido}\`)"><i class="fas fa-pencil"></i></a>
+                        <a class="btn btn-primary btn-sm card-link" href="/Articulo/Detalle?id=${a.id}"><i class="fas fa-search"></i></a>
+                        <a href="#" class="btn btn-sm btn-danger" onclick="eliminar(${a.id})"><i class="fas fa-trash"></i></a>
+                        
+                    <div/>                   
+                    </td>
+                </tr>`;
+            });
+            $('#tablaArticulos').html(html);
+               //showHide(userType);
+                endWait();
+        });
+    }
+
+    $('#articuloForm').submit(function (e) {
+        e.preventDefault();
+        const id = $('#idArticulo').val();
+        const dto = {
+            titulo: $('#titulo').val(),
+            resumen: $('#resumen').val(),
+            contenido: $('#contenido').val()
+        };
+
+        const method = id ? 'PUT' : 'POST';
+            const url = `${apiUri}/api/articles` +  (id ? `/${id}` : '');
+
+            wait('Guardando...');
+
+        $.ajax({
+            url, method,
+            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+            contentType: 'application/json',
+            data: JSON.stringify(dto),
+            success: function () {
+                $('#articuloForm')[0].reset();
+                $('#idArticulo').val('');
+                cargarArticulos();
+                    endWait();
+            },
+            error: function () { 
+                    endWait();
+                alert('Error al guardar'); 
+            }
+        });
+    });
+
+    $('#cancelar').click(() => {
+        $('#articuloForm')[0].reset();
+        $('#idArticulo').val('');
+    });
+
+     
+
+    function editar(id, titulo, resumen, contenido) {
+        $('#idArticulo').val(id);
+        $('#titulo').val(titulo);
+        $('#resumen').val(resumen);
+        $('#contenido').val(contenido);
+        $('#formTitulo').text('Editar artículo');
+    }
+
+    function eliminar(id) {
+        if (!confirm('¿Eliminar artículo?')) return;
+        wait('Procesando...');
+        $.ajax({
+                url: `${apiUri}/api/articles/${id}`,
+            type: 'DELETE',
+            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') },
+            success: function(){
+            endWait();
+            cargarArticulos;
+            },
+            error: function() 
+            {
+                      endWait();
+                alert('No se pudo eliminar');
+
+            }
+        });
+    }
+    $(document).ready(function(){
+        cargarArticulos();
+    });
+    
+</script>
+}

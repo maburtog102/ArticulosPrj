@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ArticulosWeb</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"  />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ArticulosWeb.styles.css" asp-append-version="true" />
+    <style>
+      
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">                
+                <a class="navbar-brand" asp-area="" asp-page="/Index">Articulos</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                      @*   <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                        </li> *@
+                        <li class="nav-item  hidden usr_admi usr_user">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Articulo/Admin">Administrar</a>
+                        </li>
+                        <li class="nav-item hidden usr_admi usr_user">
+                            <a  class="nav-link text-dark" href="#" id="logoutBtn" >Cerrar sesión</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div>
+      
+
+    </div>
+    <script>
+  var userType=0;
+  var user='';
+  const apiUri = 'https://localhost:44350';
+  const token = localStorage.getItem("token");
+  const current = location.pathname.toLowerCase();
+    //  alert('pausa');
+const exempt = [ "articulo/admin"];
+if (!token && exempt.includes(current)) {
+    window.location.href = "/Auth/Register";
+}
+
+    </script>
+    <div class="container">
+        <h6 id="userNameH"><i class="fas fa-user"></i><span id="userName">Anónimo      <a href="/Auth/Login">Iniciar Session</a>      <a href="/Auth/Register">Registrarse</a></span></h6>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - ArticulosWeb - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+   
+      //const token = localStorage.getItem("token");
+       
+
+    if (token) {
+      $('#logoutBtn').show();
+    }
+
+    $('#logoutBtn').click(function () {
+    localStorage.removeItem("token");
+    location.href = "/Auth/Login";
+    });
+
+    fetch( `${apiUri}/api/auth/me`, {
+    headers: { Authorization: "Bearer " + localStorage.getItem("token") }
+})
+.then(r => r.json())
+.then(data => {
+    user=data;
+    userType= data.admin ? 1 : 2;
+   $("#userName").text(data.nombreUsuario + (userType==1?'[admin]':'[user]'));
+   
+}).finally(() => {
+   showHide(userType); //Ocultaré las opciones por jquery (no seguro pero facil) porque ya el api tiene los metodos marcados para solo ejecutarse segun el rol
+});
+</script>
+    @await RenderSectionAsync("Scripts", required: false)
+  
+</body>
+</html>

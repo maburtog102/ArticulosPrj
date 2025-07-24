@@ -1,0 +1,47 @@
+﻿@page
+ @* @modelArticulosWeb.Web.Pages.IndexModel *@
+@{
+    ViewData["Title"] = "Detalle";
+}
+@section Styles
+{
+    <link href="~/css/articulo.css" rel="stylesheet" />
+    <style>
+
+    </style>
+
+}
+<h2>Mis Artículos</h2>
+
+<div class="mb-4">
+    <h5 id="formTitulo">Nuevo artículo</h5>
+    <form id="articuloForm">
+        <input type="hidden" id="idArticulo" />
+        <input type="text" id="titulo" class="form-control mb-2" placeholder="Título" required />
+        <input type="text" id="resumen" class="form-control mb-2" placeholder="Resumen" required />
+        <textarea id="contenido" class="form-control mb-2" placeholder="Contenido" required></textarea>
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <button type="button" id="cancelar" class="btn btn-secondary">Cancelar</button>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Resumen</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="tablaArticulos"></tbody>
+</table>
+
+<script src="~/js/articulo.js"></script>
+@section Scripts {
+    <script>
+          $(document).ready(function () {
+              cargarArticulos();
+           });
+        
+    </script>
+}
