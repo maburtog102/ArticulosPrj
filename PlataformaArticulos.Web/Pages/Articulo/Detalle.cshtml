@@ -48,7 +48,8 @@
                 const art = data.articulo;
                 $('#titulo').text(art.titulo);
                 $('#autorFecha').text(`por ${art.autor} - ${new Date(art.fechaCreacion).toLocaleDateString()}`);
-                $('#contenido').text(art.contenido);
+//                $('#contenido').text(art.contenido);
+        $('#contenido').html(art.contenido);
 
                 let html = '';
                 data.comentarios.forEach(c => {

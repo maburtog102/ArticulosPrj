@@ -12,7 +12,8 @@
         <input type="hidden" id="idArticulo" />
         <input type="text" id="titulo" class="form-control mb-2" placeholder="Título" required />
         <input type="text" id="resumen" class="form-control mb-2" placeholder="Resumen" required />
-        <textarea id="contenido" class="form-control mb-2" placeholder="Contenido" required></textarea>
+            <div id="editor-container"></div>
+      @*   <textarea id="contenido" class="form-control mb-2" placeholder="Contenido" required></textarea> *@
         <button type="submit" class="btn btn-success"><i class="fas fa-save"></i>   Guardar</button>
         <button type="button" id="cancelar" class="btn btn-secondary"><i class="fas fa-cancel"></i>   Cancelar</button>
     </form>
@@ -29,6 +30,10 @@
 </div>
 @section Scripts {
 <script>
+    var Articulos=[];
+          var quill = new Quill('#editor-container', {
+          theme: 'snow'
+        });
     function cargarArticulos() {
         wait('Obteniendo articulos...');
             $.get(`${apiUri}/api/articles`, function (data) {   
@@ -37,6 +42,7 @@
                 if(userType==2)
                 data = data.filter(f=> f.autorId==user.id);
 
+                    Articulos = data;
             let html = '';
             data.forEach(a => {
                      var fecha= new Date(a.fechaCreacion).toLocaleDateString("es-NI");
@@ -46,7 +52,7 @@
                     <td>${fecha}</td>
                     <td>
                         <div class="btn-group" role="group">
-                        <a href="#" class="btn btn-sm btn-warning" onclick="editar(${a.id}, '${a.titulo}', '${a.resumen}', \`${a.contenido}\`)"><i class="fas fa-pencil"></i></a>
+                        <a href="#" class="btn btn-sm btn-warning" onclick="editar(${a.id})"><i class="fas fa-pencil"></i></a>
                         <a class="btn btn-primary btn-sm card-link" href="/Articulo/Detalle?id=${a.id}"><i class="fas fa-search"></i></a>
                         <a href="#" class="btn btn-sm btn-danger" onclick="eliminar(${a.id})"><i class="fas fa-trash"></i></a>
                         
@@ -61,12 +67,15 @@
     }
 
     $('#articuloForm').submit(function (e) {
+
+        var contenidoHTML = quill.root.innerHTML;
+
         e.preventDefault();
         const id = $('#idArticulo').val();
         const dto = {
             titulo: $('#titulo').val(),
             resumen: $('#resumen').val(),
-            contenido: $('#contenido').val()
+            contenido: contenidoHTML
         };
 
         const method = id ? 'PUT' : 'POST';
@@ -81,6 +90,7 @@
             data: JSON.stringify(dto),
             success: function () {
                 $('#articuloForm')[0].reset();
+                     quill.setText('');
                 $('#idArticulo').val('');
                 cargarArticulos();
                     endWait();
@@ -95,16 +105,23 @@
     $('#cancelar').click(() => {
         $('#articuloForm')[0].reset();
         $('#idArticulo').val('');
+             quill.setText('');
     });
 
      
 
-    function editar(id, titulo, resumen, contenido) {
+    function editar(id /*, titulo, resumen, contenido*/) {
+        var art= Articulos.filter(f=> f.id == id)[0];
+
         $('#idArticulo').val(id);
-        $('#titulo').val(titulo);
-        $('#resumen').val(resumen);
-        $('#contenido').val(contenido);
+        $('#titulo').val(art.titulo);
+        $('#resumen').val(art.resumen);
+        //$('#contenido').val(art.contenido);
         $('#formTitulo').text('Editar artículo');
+
+        var contenidoCrudo = art.contenido;
+    var contenidoSeguro = DOMPurify.sanitize(contenidoCrudo);     
+        quill.clipboard.dangerouslyPasteHTML(contenidoSeguro);
     }
 
     function eliminar(id) {
