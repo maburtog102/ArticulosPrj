@@ -1,7 +1,0 @@
-C:\Users\MSI GS75 Stealth\source\repos\ArticulosSLN\ArticulosWeb\obj\Debug\net8.0\ArticulosWeb.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\MSI GS75 Stealth\source\repos\ArticulosSLN\ArticulosWeb\obj\Debug\net8.0\ArticulosWeb.AssemblyInfoInputs.cache
-C:\Users\MSI GS75 Stealth\source\repos\ArticulosSLN\ArticulosWeb\obj\Debug\net8.0\ArticulosWeb.AssemblyInfo.cs
-C:\Users\MSI GS75 Stealth\source\repos\ArticulosSLN\ArticulosWeb\obj\Debug\net8.0\ArticulosWeb.csproj.CoreCompileInputs.cache
-C:\Users\MSI GS75 Stealth\source\repos\ArticulosSLN\ArticulosWeb\obj\Debug\net8.0\ArticulosWeb.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\MSI GS75 Stealth\source\repos\ArticulosSLN\ArticulosWeb\obj\Debug\net8.0\ArticulosWeb.RazorAssemblyInfo.cache
-C:\Users\MSI GS75 Stealth\source\repos\ArticulosSLN\ArticulosWeb\obj\Debug\net8.0\ArticulosWeb.RazorAssemblyInfo.cs

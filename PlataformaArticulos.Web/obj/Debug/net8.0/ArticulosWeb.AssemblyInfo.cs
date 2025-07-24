@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ArticulosWeb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6af9a7bccd64659e741c9bdbf4872224de1e05f2")]
 [assembly: System.Reflection.AssemblyProductAttribute("ArticulosWeb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ArticulosWeb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
